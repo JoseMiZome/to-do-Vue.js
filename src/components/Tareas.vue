@@ -8,10 +8,10 @@
               Id
             </td>
             <td>
-              Nombre de la tarea
+              Nombre
             </td>
             <td>
-              Realizada
+              Estado
             </td>
           </tr>
         </thead>
@@ -19,28 +19,41 @@
           <tr v-for="(tarea, index) in tareas" :key="index">
             <td>{{ tarea.id }}</td>
             <td>{{ tarea.nombre }}</td>
-            <input type="checkbox" :checked="tarea.estado === 'realizada'"/>
+            <td><button :class="{'realizada' : tarea.estado === 'realizada', 'sinHacer' : tarea.estado === 'sin hacer'}"
+            @click="cambiarEstado(tarea.id)" >{{ tarea.estado }}</button></td>
           </tr>
         </tbody>
       </table>
       <div>
-        <input id="nombre-tarea" v-model="tarea.nombre"/>
-        <button id="guardarTarea" @click="guardarTarea()" >Guardar Tarea</button>
+        <input v-if="estado != 'realizada'" id="nombre-tarea" v-model="tarea.nombre"/>
+        <button v-if="estado != 'realizada'" id="guardarTarea" @click="guardarTarea()" >Guardar Tarea</button>
       </div>
     </div>
 </template>
 
 <script>
+
 export default {
   data () {
     return {
-      tarea: { nombre: '' },
-      tareas: [
-        { id: 1, nombre: 'Gestionar firebase', estado: 'incompleta' },
-        { id: 2, nombre: 'Gestionar tareas', estado: 'realizada' },
-        { id: 3, nombre: 'Gestionar to do list', estado: 'sin hacer' }
-      ]
+      tarea: { nombre: '' }
     }
+  },
+  computed: {
+    tareas () {
+      let tareas = this.$store.state.tareas
+      if (this.estado) {
+        if (this.estado === 'realizadas') {
+          tareas = this.$store.state.tareas.filter(t => t.estado === 'realizada')
+        } else if (this.estado === 'sin hacer') {
+          tareas = this.$store.state.tareas.filter(t => t.estado === 'sin hacer')
+        }
+      }
+      return tareas
+    }
+  },
+  props: {
+    estado: String
   },
   methods: {
     nuevaTarea () {
@@ -48,20 +61,44 @@ export default {
       document.querySelector('#guardarTarea').style.display = 'block'
     },
     guardarTarea () {
-      this.tarea.id = this.tareas[this.tareas.length - 1].id + 1
-      this.tareas.push(this.tarea)
+      this.tarea.id = this.$store.state.tareas[this.$store.state.tareas.length - 1].id + 1
+      this.tarea.estado = 'sin hacer'
       document.querySelector('#nombre-tarea').style.display = 'none'
       document.querySelector('#guardarTarea').style.display = 'none'
+      this.$store.commit({
+        type: 'guardarTarea',
+        tarea: this.tarea
+      })
+    },
+    cambiarEstado (id) {
+      const tarea = this.$store.state.tareas.find(t => t.id === id)
+      tarea.estado === 'realizada' ? tarea.estado = 'sin hacer' : tarea.estado = 'realizada'
+      // this.$store.commit({
+      //   type: 'cambiarEstado',
+      //   tarea
+      // })
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
+button{
+  border-radius: 5%;
+}
+
 #nombre-tarea{
   display: none;
 }
 #guardarTarea{
   display: none;
 }
+.realizada{
+  background-color: green;
+}
+
+.sinHacer{
+  background-color: red;
+}
+
 </style>
