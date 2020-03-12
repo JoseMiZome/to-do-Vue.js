@@ -39,21 +39,8 @@ export default {
       tarea: { nombre: '' }
     }
   },
-  computed: {
-    tareas () {
-      let tareas = this.$store.state.tareas
-      if (this.estado) {
-        if (this.estado === 'realizadas') {
-          tareas = this.$store.state.tareas.filter(t => t.estado === 'realizada')
-        } else if (this.estado === 'sin hacer') {
-          tareas = this.$store.state.tareas.filter(t => t.estado === 'sin hacer')
-        }
-      }
-      return tareas
-    }
-  },
   props: {
-    estado: String
+    tareas: Array
   },
   methods: {
     nuevaTarea () {

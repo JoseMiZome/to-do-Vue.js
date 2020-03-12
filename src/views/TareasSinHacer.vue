@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 class="tareas">Listado de tareas</h1>
-    <Tareas :estado="'sin hacer'"></Tareas>
+    <Tareas :tareas="this.$store.state.tareas.filter(t => t.estado === 'sin hacer')"></Tareas>
   </div>
 </template>
 
@@ -12,11 +12,6 @@ export default {
   name: 'TareasSinHacer',
   components: {
     Tareas
-  },
-  computed: {
-    tareas () {
-      return this.$store.getters.tareasPorEstado('sin hacer')
-    }
   }
 }
 </script>

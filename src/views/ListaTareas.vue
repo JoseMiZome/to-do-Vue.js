@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>Listado de tareas</h1>
-    <Tareas></Tareas>
+    <Tareas :tareas="this.$store.state.tareas"></Tareas>
   </div>
 </template>
 
