@@ -13,13 +13,22 @@ export default new Vuex.Store({
   },
   mutations: {
     cambiarEstado (state, tarea) {
-      var position = state.tareas.indexOf(t => t.id === tarea.id)
+      const position = state.tareas.indexOf(t => t.id === tarea.id)
       state.tareas.splice(position, 1)
       state.tareas.push(tarea)
       tarea.estado === 'realizada' ? tarea.estado = 'sin hacer' : tarea.estado = 'realizada'
     },
-    guardarTarea (state, tarea) {
-      state.tareas.push(tarea)
+    guardarTarea (state, nombre) {
+      if (nombre !== '') {
+        const tarea = {
+          id: state.tareas[state.tareas.length - 1].id + 1,
+          nombre: nombre,
+          estado: 'sin hacer'
+        }
+        state.tareas.push(tarea)
+      } else {
+        alert('No le has puesto nombre a la tarea')
+      }
     }
   }
 })

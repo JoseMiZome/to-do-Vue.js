@@ -25,46 +25,46 @@
         </tbody>
       </table>
       <div>
-        <input v-if="estado != 'realizada'" id="nombre-tarea" v-model="tarea.nombre"/>
-        <button v-if="estado != 'realizada'" id="guardarTarea" @click="guardarTarea()" >Guardar Tarea</button>
+        <input id="nombre-tarea" v-model="nombre"/>
+        <button id="guardarTarea" @click="guardarTarea(nombre)">Guardar Tarea</button>
       </div>
     </div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 
 export default {
   data () {
     return {
-      tarea: { nombre: '' }
+      nombre: ''
     }
   },
   props: {
     tareas: Array
+  },
+  watch: {
+    tareas () {
+      this.nombre = ''
+      document.querySelector('#nombre-tarea').style.display = 'none'
+      document.querySelector('#guardarTarea').style.display = 'none'
+    }
   },
   methods: {
     nuevaTarea () {
       document.querySelector('#nombre-tarea').style.display = 'block'
       document.querySelector('#guardarTarea').style.display = 'block'
     },
-    guardarTarea () {
-      this.tarea.id = this.$store.state.tareas[this.$store.state.tareas.length - 1].id + 1
-      this.tarea.estado = 'sin hacer'
-      document.querySelector('#nombre-tarea').style.display = 'none'
-      document.querySelector('#guardarTarea').style.display = 'none'
-      this.$store.commit({
-        type: 'guardarTarea',
-        tarea: this.tarea
-      })
-    },
     cambiarEstado (id) {
       const tarea = this.$store.state.tareas.find(t => t.id === id)
+      console.log(tarea)
       tarea.estado === 'realizada' ? tarea.estado = 'sin hacer' : tarea.estado = 'realizada'
       // this.$store.commit({
       //   type: 'cambiarEstado',
       //   tarea
       // })
-    }
+    },
+    ...mapMutations(['guardarTarea'])
   }
 }
 </script>
